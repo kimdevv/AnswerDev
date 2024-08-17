@@ -2,14 +2,12 @@ package com.hufs.AnswerDev.Model.User;
 
 import com.hufs.AnswerDev.Model.User.Dto.fromClient.LoginClientDto;
 import com.hufs.AnswerDev.Model.User.Dto.fromClient.SignUpClientDto;
+import com.hufs.AnswerDev.Model.User.Dto.fromServer.MyInfoServerDto;
 import com.hufs.AnswerDev.Model.User.Dto.fromServer.ResponseTokenServerDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.ExecutionException;
 
@@ -29,5 +27,10 @@ public class UserController {
     @PostMapping("/login")
     public ResponseTokenServerDto login(@RequestBody LoginClientDto dto) throws ExecutionException, InterruptedException {
         return userService.login(dto).get();
+    }
+
+    @GetMapping("/myInfo")
+    public MyInfoServerDto myInfo() throws ExecutionException, InterruptedException {
+        return userService.myInfo().get();
     }
 }

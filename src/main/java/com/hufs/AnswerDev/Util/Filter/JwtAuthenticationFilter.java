@@ -12,6 +12,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -30,9 +31,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String accessToken = bearerToken.substring(7);
 
         int userId = jwtUtil.validateToken(accessToken);
-        Authentication authentication = jwtUtil.getAuthentication(userId);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
+        try {
+            Authentication authentication = jwtUtil.getAuthentication(userId).get();
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        }
         filterChain.doFilter(request, response);
     }
 

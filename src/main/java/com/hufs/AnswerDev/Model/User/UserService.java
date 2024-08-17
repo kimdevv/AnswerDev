@@ -2,12 +2,15 @@ package com.hufs.AnswerDev.Model.User;
 
 import com.hufs.AnswerDev.Model.User.Dto.fromClient.LoginClientDto;
 import com.hufs.AnswerDev.Model.User.Dto.fromClient.SignUpClientDto;
+import com.hufs.AnswerDev.Model.User.Dto.fromServer.MyInfoServerDto;
 import com.hufs.AnswerDev.Model.User.Dto.fromServer.ResponseTokenServerDto;
 import com.hufs.AnswerDev.Util.Enum.JwtEnum;
 import com.hufs.AnswerDev.Util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,8 +39,20 @@ public class UserService {
         return this.userRepository.findByUsername(username);
     }
 
-    @Transactional
     @Async
+    @Transactional
+    public CustomUserDetails getCurrentUserDetails() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.getPrincipal() instanceof  CustomUserDetails) {
+            return (CustomUserDetails) authentication.getPrincipal();
+        } else {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "잘못된 유저 정보입니다.");
+        }
+    }
+
+    @Async
+    @Transactional
     public CompletableFuture<ResponseTokenServerDto> signUp(SignUpClientDto dto) throws ExecutionException, InterruptedException {
         String username = dto.getUsername();
         String rawPassword = dto.getPassword();
@@ -67,8 +82,8 @@ public class UserService {
         return CompletableFuture.completedFuture(result);
     }
 
-    @Transactional
     @Async
+    @Transactional
     public CompletableFuture<ResponseTokenServerDto> login(LoginClientDto dto) throws ExecutionException, InterruptedException {
          String username = dto.getUsername();
          String password = dto.getPassword();
@@ -88,4 +103,15 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "아이디 혹은 비밀번호가 잘못되었습니다.");
         }
     }
+
+    @Async
+    @Transactional
+    public CompletableFuture<MyInfoServerDto> myInfo() {
+        CustomUserDetails userDetails = getCurrentUserDetails();
+        String nickname = userDetails.getNickname();
+        String respectPerson = userDetails.getRespectPerson();
+
+        return CompletableFuture.completedFuture(new MyInfoServerDto(nickname, respectPerson));
+    }
+
 }

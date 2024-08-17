@@ -3,6 +3,7 @@ package com.hufs.AnswerDev.Util;
 import com.hufs.AnswerDev.Model.User.CustomUserDetails;
 import com.hufs.AnswerDev.Model.User.UserService;
 import com.hufs.AnswerDev.Util.Enum.JwtEnum;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -58,6 +59,12 @@ public class JwtUtil {
     }
 
     @Async
+    public JwtParser getJwtParser() {
+        Key key = getSignKey();
+        return Jwts.parser().verifyWith((SecretKey) key).build();
+    }
+
+    @Async
     public CompletableFuture<String> createToken(int userId, JwtEnum tokenType) {
         Map<String, Integer> claim = createClaim(userId);
 
@@ -83,20 +90,19 @@ public class JwtUtil {
         return CompletableFuture.completedFuture(token);
     }
 
-    @Async
     public int validateToken(String token) {
         try {
-            Key key = getSignKey();
-            return Integer.parseInt(Jwts.parser().verifyWith((SecretKey) key).build().parseSignedClaims(token).getPayload().getSubject());
-            //return Jwts.parser().setSigningKey(key).build().parseSignedClaims(); // 토큰 검증
+            JwtParser jwtParser = getJwtParser();
+
+            return (int) jwtParser.parseSignedClaims(token).getPayload().get("userId"); // 토큰 검증 후 userId 반환
         } catch (MalformedJwtException exception) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, exception.getMessage());
         }
     }
 
     @Async
-    public Authentication getAuthentication(int userId) {
+    public CompletableFuture<Authentication> getAuthentication(int userId) {
         CustomUserDetails customUserDetails = new CustomUserDetails(this.userService.findById(userId));
-        return new UsernamePasswordAuthenticationToken(customUserDetails, "", customUserDetails.getAuthorities());
+        return CompletableFuture.completedFuture(new UsernamePasswordAuthenticationToken(customUserDetails, "", customUserDetails.getAuthorities()));
     }
 }
