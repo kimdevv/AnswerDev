@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Service
 public class UserService {
@@ -26,8 +27,18 @@ public class UserService {
     PasswordEncoder passwordEncoder;
 
     @Transactional
+    public User findById(int userId) {
+        return this.userRepository.findById(userId).get();
+    }
+
+    @Transactional
+    public User findByUsername(String username) {
+        return this.userRepository.findByUsername(username);
+    }
+
+    @Transactional
     @Async
-    public CompletableFuture<ResponseTokenServerDto> signUp(SignUpClientDto dto) {
+    public CompletableFuture<ResponseTokenServerDto> signUp(SignUpClientDto dto) throws ExecutionException, InterruptedException {
         String username = dto.getUsername();
         String rawPassword = dto.getPassword();
         String hashedPassword = passwordEncoder.encode(rawPassword);
@@ -49,8 +60,8 @@ public class UserService {
                 .build();
         userRepository.save(newUser);
 
-        String accessToken = jwtUtil.createToken(newUser.getId(), JwtEnum.ACCESSTOKEN);
-        String refreshToken = jwtUtil.createToken(newUser.getId(), JwtEnum.REFRESHTOKEN);
+        String accessToken = jwtUtil.createToken(newUser.getId(), JwtEnum.ACCESSTOKEN).get();
+        String refreshToken = jwtUtil.createToken(newUser.getId(), JwtEnum.REFRESHTOKEN).get();
 
         ResponseTokenServerDto result = new ResponseTokenServerDto(accessToken, refreshToken);
         return CompletableFuture.completedFuture(result);
@@ -58,7 +69,7 @@ public class UserService {
 
     @Transactional
     @Async
-    public CompletableFuture<ResponseTokenServerDto> login(LoginClientDto dto) {
+    public CompletableFuture<ResponseTokenServerDto> login(LoginClientDto dto) throws ExecutionException, InterruptedException {
          String username = dto.getUsername();
          String password = dto.getPassword();
 
@@ -68,8 +79,8 @@ public class UserService {
         }
 
         if (passwordEncoder.matches(password, theUser.getPassword())) {
-            String accessToken = jwtUtil.createToken(theUser.getId(), JwtEnum.ACCESSTOKEN);
-            String refreshToken = jwtUtil.createToken(theUser.getId(), JwtEnum.REFRESHTOKEN);
+            String accessToken = jwtUtil.createToken(theUser.getId(), JwtEnum.ACCESSTOKEN).get();
+            String refreshToken = jwtUtil.createToken(theUser.getId(), JwtEnum.REFRESHTOKEN).get();
 
             ResponseTokenServerDto result = new ResponseTokenServerDto(accessToken, refreshToken);
             return CompletableFuture.completedFuture(result);
