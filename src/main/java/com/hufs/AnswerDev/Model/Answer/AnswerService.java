@@ -33,7 +33,7 @@ public class AnswerService {
         String url = dto.getUrl();
         Answer existAnswer = answerRepository.findByUrl(url);
 
-        System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
+        System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver");
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");
         options.addArguments("window-size=1400,1500");
