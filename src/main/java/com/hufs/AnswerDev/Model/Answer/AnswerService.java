@@ -35,8 +35,6 @@ public class AnswerService {
 
         System.setProperty("webdriver.chrome.driver", "/usr/local/bin");
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless");
-        options.addArguments("window-size=1400,1500");
         WebDriver driver = new ChromeDriver(options);
         try {
             driver.get(url);
