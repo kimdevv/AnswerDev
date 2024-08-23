@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
+    <title>AnswerDev</title>
+</head>
+<body>
+    <span id="logoSpan" onclick="window.location.href = '/index.html'">AnswerDev</span>
+    <input id="usernameInput" class="input" placeholder="아이디">
+    <input id="passwordInput" class="input" type="password" placeholder="비밀번호">
+    <input id="nicknameInput" class="input" placeholder="닉네임">
+    <input id="respectPersonInput"class="input" placeholder="존경하는 인물" style="margin-bottom: 30px;">
+    <div id="signupRequestButton" class="button" style="width: 500px; padding: 10px;" onclick="signupRequest()">회원가입</div>
+    <div style="display: flex; justify-content: right; width: 500px; margin-top: 10px;">
+        <a href="/login.html">로그인</a>
+    </div>
+</body>
+
+<script>
+    function signupRequest() {
+        const username = document.getElementById("usernameInput").value;
+        const password = document.getElementById("passwordInput").value;
+        const nickname = document.getElementById("nicknameInput").value;
+        const respectPerson = document.getElementById("respectPersonInput").value;
+
+        if (username == "" || password == "" || nickname == "" || respectPerson == "") {
+            alert("칸을 모두 채워주세요.");
+        } else {
+            const url = 'http://127.0.0.1:8800/user/signup';
+            const data = {
+                username: username,
+                password: password,
+                nickname: nickname,
+                respectPerson: respectPerson
+            };
+
+            axios.post(url, data, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    }
+            }).then(response => {
+                localStorage.setItem("Authorization", "Bearer " + response.data.accessToken);
+                localStorage.setItem("Refreshtoken", "Bearer" + response.data.refreshToken);
+                alert("회원가입이 완료되었습니다.");
+                window.location.href = "/login.html";
+            }).catch(error => {
+                alert("에러가 발생하였습니다.")
+                console.log(error);
+            });
+        }
+    }
+</script>
+</html>

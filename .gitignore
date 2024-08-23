@@ -36,3 +36,7 @@ application.properties
 
 ### VS Code ###
 .vscode/
+
+### EC2 Key ###
+AnswerDev.pem
+AnswerDev.ppk

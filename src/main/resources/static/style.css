@@ -1,0 +1,65 @@
+body {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 100vh;
+}
+
+#logoSpan {
+    margin-top: 100px;
+    margin-bottom: 20px;
+    font-size: 60px;
+    font-family:'Courier New', Courier, monospace;
+    cursor: pointer;
+}
+
+#buttonContainer {
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+    width: 420px;
+    justify-content: space-between;
+}
+
+.button {
+    width: 200px;
+    height: 60px;
+    border-radius: 20px;
+    background-color: #f2f2f2;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: bold;
+    color: gray;
+}
+
+#urlInput {
+    border: none;
+    background-color: #f2f2f2;
+    width: 500px;
+    height: 50px;
+    border-radius: 10px;
+    font-size: 22px;
+    font-weight: bold;
+    color: gray;
+    padding: 10px;
+    outline: none;
+}
+#urlInput::placeholder {
+    color: #c2c2c2;
+}
+
+.input {
+    border: none;
+    background-color: #f2f2f2;
+    width: 500px;
+    height: 30px;
+    border-radius: 10px;
+    font-size: 18px;
+    color: gray;
+    padding: 10px;
+    outline: none;
+    margin-bottom: 10px;
+}

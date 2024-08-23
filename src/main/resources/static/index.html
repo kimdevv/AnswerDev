@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
+    <title>AnswerDev</title>
+</head>
+<body>
+    <span id="logoSpan" onclick="window.location.href = '/index.html'">AnswerDev</span>
+    <input id="urlInput" size="50" placeholder="Studocu 주소 입력">
+    <div id="buttonContainer">
+        <div id="logButton" class="button">
+        </div>
+        <div id="goButton" class="button">
+           검색
+        </div>
+    </div>
+    <span id="favorSpan" style="font-size: 12px; margin-top: 10px;"></span>
+
+    <span style="margin-top: 50px; font-size: 14px;">처음에 잠깐 새로운 브라우저 화면이 열렸다가 닫힐 수 있습니다. 당황하지 마세요.</span>
+    <div id="imageContainer"></div>
+</body>
+
+<script>
+    const token = localStorage.getItem("Authorization");
+
+    const logButton = document.getElementById('logButton');
+    const favorSpan = document.getElementById('favorSpan');
+
+    let nickname;
+    let respectPerson;
+    if (!token) {
+        setLoginButton();
+        favorSpan.innerText = "로그인을 하시면 엄청난 혜택이 제공됩니다.";
+    } else {
+        const url = 'http://127.0.0.1:8800/user/myInfo';
+
+        axios.get(url, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem("Authorization")
+                }
+        }).then(response => {
+            favorSpan.innerText = `사실 혜택같은 건 없습니다. 버그나 찾아주십쇼 ㅋㅋ\n이용해주셔서 감사합니다, ${response.data.respectPerson} 님을 존경하는 ${response.data.nickname} 님.`;
+        }).catch(error => {
+            alert("에러가 발생하였습니다.")
+            console.log(error);
+        });
+
+        setLogoutButton();
+    }
+
+    function setLoginButton() {
+        logButton.innerText = "로그인";
+        logButton.onclick = () => { location.href = '/login.html'; }
+    }
+    function setLogoutButton() {
+        logButton.innerText = "로그아웃";
+        logButton.onclick = () => {
+            localStorage.removeItem("Authorization");
+            alert("로그아웃이 완료되었습니다.");
+            window.location.reload();
+        };
+    }
+
+    document.getElementById('goButton').addEventListener('click', () => {
+        const imageContainer = document.getElementById('imageContainer');
+        imageContainer.innerHTML = "";
+
+        const url = 'http://127.0.0.1:8800/answer/register';
+        const data = {
+            url: document.getElementById('urlInput').value
+        };
+
+        axios.post(url, data, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response => {
+            const imageList = response.data.imageData;
+            console.log(imageList)
+            imageList.forEach(image => {
+                const imgContainer = document.createElement('img');
+                imgContainer.src = image.imageUrl
+                imgContainer.alt = `Image ${image.imageNumber}`
+
+                imageContainer.appendChild(imgContainer);
+            });
+            console.log(response.data);
+        }).catch(error => {
+            console.log(error);
+        });
+        document.getElementById("urlInput").value = "";
+    });
+</script>
+</html>
