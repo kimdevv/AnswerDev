@@ -26,7 +26,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken == null || !bearerToken.startsWith("Bearer ")) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다.");
+            throw new ResponseStatusException(HttpStatus.valueOf(401), "유효하지 않은 토큰입니다.");
         }
         String accessToken = bearerToken.substring(7);
 
@@ -45,6 +45,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getRequestURI();
-        return path.startsWith("/user/login") || path.startsWith("/user/signup");
+        return path.startsWith("/user/login")
+                || path.startsWith("/user/signup")
+                || path.startsWith("/answer/register")
+                || path.startsWith("/index.html")
+                || path.startsWith("/login.html")
+                || path.startsWith("/signup.html")
+                || path.startsWith("/style.css")
+                || path.startsWith("/favicon.ico");
     }
 }

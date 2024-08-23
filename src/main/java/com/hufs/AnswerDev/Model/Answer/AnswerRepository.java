@@ -1,4 +1,8 @@
 package com.hufs.AnswerDev.Model.Answer;
 
-public class AnswerRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface AnswerRepository extends JpaRepository<Answer, Integer> {
+    Answer findByName(String name);
+    Answer findByUrl(String Url);
 }

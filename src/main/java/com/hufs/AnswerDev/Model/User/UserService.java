@@ -47,7 +47,7 @@ public class UserService {
         if (authentication != null && authentication.getPrincipal() instanceof  CustomUserDetails) {
             return (CustomUserDetails) authentication.getPrincipal();
         } else {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "잘못된 유저 정보입니다.");
+            throw new ResponseStatusException(HttpStatus.valueOf(401), "잘못된 유저 정보입니다.");
         }
     }
 

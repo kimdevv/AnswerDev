@@ -96,7 +96,7 @@ public class JwtUtil {
 
             return (int) jwtParser.parseSignedClaims(token).getPayload().get("userId"); // 토큰 검증 후 userId 반환
         } catch (MalformedJwtException exception) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, exception.getMessage());
+            throw new ResponseStatusException(HttpStatus.valueOf(401), exception.getMessage());
         }
     }
 

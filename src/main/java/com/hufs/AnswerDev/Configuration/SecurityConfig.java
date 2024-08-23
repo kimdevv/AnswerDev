@@ -38,7 +38,15 @@ public class SecurityConfig {
                 // URL 별로 권한을 설정
                 .authorizeHttpRequests((authorize) -> {
                     authorize
-                            .requestMatchers( "/user/login", "/user/login").permitAll()
+                            .requestMatchers(
+                                    "/user/login",
+                                    "/user/signup",
+                                    "/answer/register",
+                                    "/index.html",
+                                    "/login.html",
+                                    "/signup.html",
+                                    "/style.css",
+                                    "/favicon.ico").permitAll()
                             .anyRequest().authenticated();
                     // requestMatchers("/user").hasRole("USER") // USER 권한이 있는 유저만 접근 가능
                 })

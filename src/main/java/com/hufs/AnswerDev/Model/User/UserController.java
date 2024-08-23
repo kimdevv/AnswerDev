@@ -19,16 +19,19 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    @CrossOrigin(origins="*", methods = RequestMethod.POST)
     @PostMapping("/signup")
     public ResponseTokenServerDto signUp(@RequestBody SignUpClientDto dto) throws ExecutionException, InterruptedException {
         return userService.signUp(dto).get();
     }
 
+    @CrossOrigin(origins="*", methods = RequestMethod.POST)
     @PostMapping("/login")
     public ResponseTokenServerDto login(@RequestBody LoginClientDto dto) throws ExecutionException, InterruptedException {
         return userService.login(dto).get();
     }
 
+    @CrossOrigin(origins="*", methods = RequestMethod.GET)
     @GetMapping("/myInfo")
     public MyInfoServerDto myInfo() throws ExecutionException, InterruptedException {
         return userService.myInfo().get();

@@ -1,4 +1,6 @@
 package com.hufs.AnswerDev.Model.AnswerImage;
 
-public class AnswerImageRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface AnswerImageRepository extends JpaRepository<AnswerImage, Integer> {
 }
