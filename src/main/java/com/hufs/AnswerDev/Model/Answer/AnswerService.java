@@ -34,8 +34,10 @@ public class AnswerService {
         Answer existAnswer = answerRepository.findByUrl(url);
 
         ChromeOptions options = new ChromeOptions();
+        options.addArguments("--disable-gpu");
         options.addArguments("--headless");
-        options.addArguments("window-size=1400,1500");
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-blink-features=AutomationControlled");
         WebDriver driver = new ChromeDriver(options);
         try {
             driver.get(url);
