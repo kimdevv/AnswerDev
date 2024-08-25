@@ -33,6 +33,7 @@ public class AnswerService {
         String url = dto.getUrl();
         Answer existAnswer = answerRepository.findByUrl(url);
 
+        System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--disable-gpu");
         options.addArguments("--headless");
