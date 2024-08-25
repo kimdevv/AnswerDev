@@ -35,7 +35,7 @@
         setLoginButton();
         favorSpan.innerText = "로그인을 하시면 엄청난 혜택이 제공됩니다.";
     } else {
-        const url = 'http://127.0.0.1:8800/user/myInfo';
+        const url = 'https://answerdev.store:8443/user/myInfo';
 
         axios.get(url, {
             headers: {
@@ -45,8 +45,9 @@
         }).then(response => {
             favorSpan.innerText = `사실 혜택같은 건 없습니다. 버그나 찾아주십쇼 ㅋㅋ\n이용해주셔서 감사합니다, ${response.data.respectPerson} 님을 존경하는 ${response.data.nickname} 님.`;
         }).catch(error => {
-            alert("에러가 발생하였습니다.")
-            console.log(error);
+            localStorage.removeItem("Authorization");
+            localStorage.removeItem("Refreshtoken");
+            location.reload();
         });
 
         setLogoutButton();
@@ -69,7 +70,7 @@
         const imageContainer = document.getElementById('imageContainer');
         imageContainer.innerHTML = "";
 
-        const url = 'http://127.0.0.1:8800/answer/register';
+        const url = 'https://answerdev.store:8443/answer/register';
         const data = {
             url: document.getElementById('urlInput').value
         };
