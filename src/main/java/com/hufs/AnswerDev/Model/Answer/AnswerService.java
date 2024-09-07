@@ -31,14 +31,18 @@ public class AnswerService {
     @Transactional
     public CompletableFuture<RegisterAnswerServerDto> registerAnswer(RegisterAnswerClientDto dto) throws IOException {
         String url = dto.getUrl();
-        Answer existAnswer = answerRepository.findByUrl(url);
+//        Answer existAnswer = answerRepository.findByUrl(url);
 
-//        System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
+        System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver");
         ChromeOptions options = new ChromeOptions();
-//        options.addArguments("--disable-gpu");
-//        options.addArguments("--headless");
-//        options.addArguments("--no-sandbox");
-//        options.addArguments("--disable-blink-features=AutomationControlled");
+        options.setBinary("/usr/bin/chromium-browser");
+
+        options.addArguments("--headless");
+        options.addArguments("--disable-blink-features=AutomationControlled");
+        options.setExperimentalOption("excludeSwitches", new String[]{"enable-automation"});
+        options.setExperimentalOption("useAutomationExtension", false);
+        options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36");
+        options.addArguments("--no-sandbox");
         WebDriver driver = new ChromeDriver(options);
         try {
             driver.get(url);
